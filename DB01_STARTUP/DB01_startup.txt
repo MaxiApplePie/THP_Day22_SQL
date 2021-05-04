@@ -1,0 +1,86 @@
+CREATE TABLE 'user' (
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+    'user_name' TEXT
+);
+
+INSERT INTO user (user_name) VALUES ('Laurent');
+INSERT INTO user (user_name) VALUES ('Hugo');
+INSERT INTO user (user_name) VALUES ('Gab');
+
+CREATE TABLE 'article' (
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+    'id_user' INTEGER,
+    'titre' TEXT,
+    'contenu' TEXT
+) ;
+
+INSERT INTO article (id_user, titre, contenu) VALUES (1, 'Blog', 'Ceci est mon blog');
+INSERT INTO article (id_user, titre, contenu) VALUES (3, 'C', 'Parlons de langage C');
+INSERT INTO article (id_user, titre, contenu) VALUES (1, 'Raclette', 'Vu le temps, c est raclette ce soir');
+
+select * from 'article' a, 'user' u
+    where u.id = a.id_user;
+select * from 'article' a inner join 'user' u
+    on u.id = a.id_user;
+   
+CREATE TABLE 'categorie' (
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT, 
+    'titre' TEXT
+);    
+
+INSERT into categorie (titre) VALUES ('Relax');
+INSERT into categorie (titre) VALUES ('Developement');
+INSERT into categorie (titre) VALUES ('Hobby');
+
++---> TODO
+
+CREATE TABLE `tag` (
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `titre` TEXT,
+  `couleur` TEXT
+);
+
+INSERT INTO tag (titre, couleur) VALUES ('Populaire', 'Bleu');
+INSERT INTO tag (titre, couleur) VALUES ('Bas !', 'Rouge');
+
+
+CREATE TABLE `link_art_cat` (
+  `id_categorie` INTEGER,
+  `id_article` INTEGER
+);
+
+Insert into link_art_cat (id_categorie, id_article) VALUES (1, 2);
+Insert into link_art_cat (id_categorie, id_article) VALUES (1, 3);
+Insert into link_art_cat (id_categorie, id_article) VALUES (2, 2);
+Insert into link_art_cat (id_categorie, id_article) VALUES (3, 2);
+Insert into link_art_cat (id_categorie, id_article) VALUES (3, 3);
+
+ 
+CREATE TABLE `link_cat_tag` (
+  `id_categorie` INTEGER,
+  `id_tag` INTEGER
+);
+
+insert into link_cat_tag (id_categorie, id_tag) values(1, 1);
+insert into link_cat_tag (id_categorie, id_tag) values(2, 1);
+insert into link_cat_tag (id_categorie, id_tag) values(3, 2);
+
+*************************************************************
+*************************************************************
+*************************************************************
+
+
+
+
+
+
+
+ALTER TABLE `article` ADD FOREIGN KEY (`id_user`) REFERENCES `user` (`id`);
+
+ALTER TABLE `link_art_cat` ADD FOREIGN KEY (`id_article`) REFERENCES `article` (`id`);
+
+ALTER TABLE `link_art_cat` ADD FOREIGN KEY (`id_categorie`) REFERENCES `categorie` (`id`);
+
+ALTER TABLE `link_cat_tag` ADD FOREIGN KEY (`id_categorie`) REFERENCES `categorie` (`id`);
+
+ALTER TABLE `link_cat_tag` ADD FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id`);
