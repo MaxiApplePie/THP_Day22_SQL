@@ -1,0 +1,127 @@
+Intro
+.tables
+albums          employees       invoices        playlists     
+artists         genres          media_types     tracks        
+customers       invoice_items   playlist_track
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Récupérer tous les albums
+select * from albums;
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Récupérer tous les albums dont le titre contient "Great" (indice)
+select * from albums where Title like '%Great%';
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+ 
+=> Donner le nombre total d'albums contenus dans la base (347)
+SELECT COUNT(*) FROM ALBUMS; 
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Supprimer tous les albums dont le nom contient "music" (4)
+DELETE FROM albums WHERE title like '%music%';
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Récupérer tous les albums écrits par AC/DC
+# SELECT * FROM artists WHERE name = 'AC/DC';  => ID 1
+
+sqlite> SELECT * FROM albums, artists WHERE albums.ArtistId = artists.ArtistId and artists.name = 'AC/DC'; 
+AlbumId     Title                                  ArtistId    ArtistId    Name      
+----------  -------------------------------------  ----------  ----------  ----------
+1           For Those About To Rock We Salute You  1           1           AC/DC     
+4           Let There Be Rock                      1           1           AC/DC 
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+TrackId     Name                                     AlbumId     MediaTypeId  GenreId     Composer                                   Milliseconds  Bytes       UnitPrice 
+----------  ---------------------------------------  ----------  -----------  ----------  -----------------------------------------  ------------  ----------  ----------
+1           For Those About To Rock (We Salute You)  1           1            1           Angus Young, Malcolm Young, Brian Johnson  343719        11170334    0.99      
+2           Balls to the Wall                        2           2            1                                                      342562        5510424     0.99      
+3           Fast As a Shark                          3           2            1           F. Baltes, S. Kaufman, U. Dirkscneider &   230619        3990994     0.99    
+
+=> Récupérer tous les titres des albums de AC/DC
+sqlite> SELECT tracks.name FROM albums, artists, tracks WHERE albums.ArtistId = artists.ArtistId and tracks.AlbumId = albums.AlbumId and artists.name = 'AC/DC';
+Name                                   
+---------------------------------------
+For Those About To Rock (We Salute You)
+Put The Finger On You                  
+Let's Get It Up                        
+Inject The Venom                       
+Snowballed                             
+Evil Walks                             
+C.O.D.                                 
+Breaking The Rules                     
+Night Of The Long Knives               
+Spellbound                             
+Go Down                                
+Dog Eat Dog                            
+Let There Be Rock                      
+Bad Boy Boogie                         
+Problem Child                          
+Overdose                               
+Hell Ain't A Bad Place To Be           
+Whole Lotta Rosie      
+
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Récupérer la liste des titres de l'album "Let There Be Rock"
+sqlite> SELECT tracks.name FROM albums, tracks WHERE tracks.AlbumId = albums.AlbumId and albums.title = "Let There Be Rock";
+Name      
+----------
+Go Down   
+Dog Eat Do
+Let There 
+Bad Boy Bo
+Problem Ch
+Overdose  
+Hell Ain't
+Whole Lott
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Afficher le prix de cet album ainsi que sa durée totale [7$92 / ]
+sqlite> SELECT sum(tracks.UnitPrice) as TotalPrice, sum(tracks.Milliseconds) / 1000 as Duration_in_sec FROM albums, tracks WHERE tracks.AlbumId = albums.AlbumId and albums.title = "Let There Be Rock";
+TotalPrice  Duration_in_sec
+----------  ---------------
+7.92        2453        
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Afficher le coût de l'intégralité de la discographie de "Deep Purple"
+sqlite> SELECT sum(tracks.UnitPrice) as TotalPrice, sum(tracks.Milliseconds) / 1000 as Duration_in_sec 
+   ...>     FROM albums, tracks, artists 
+   ...>     WHERE albums.ArtistId = artists.ArtistId 
+   ...>         and tracks.AlbumId = albums.AlbumId 
+   ...>         and artists.name = 'Deep Purple';
+TotalPrice        Duration_in_sec
+----------------  ---------------
+91.0799999999999  32259          
+
+***********************************************************************************************************************
+***********************************************************************************************************************
+***********************************************************************************************************************
+
+=> Créer l'album de ton artiste favori en base, en renseignant correctement les trois tables albums, artists et tracks
